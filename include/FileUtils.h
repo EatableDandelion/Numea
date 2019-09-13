@@ -23,8 +23,6 @@ namespace Numea
 
 				file << addLine(variables...) << std::endl;
 			}
-			
-			std::ofstream& getOfstream();
 		
 		private:
 			const std::string fileName;
@@ -42,8 +40,6 @@ namespace Numea
 				return std::to_string(variable);
 			}
 	};
-	
-	std::ifstream& operator>>(std::ifstream& stream, DataFileWriter& fileWriter);
 	
 	
 }

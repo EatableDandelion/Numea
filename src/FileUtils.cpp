@@ -14,15 +14,4 @@ namespace Numea
 			file.close();
 		}
 	}
-	
-	std::ofstream& DataFileWriter::getOfstream()
-	{
-		return file;
-	}
-	
-	std::ifstream& Numea::operator>>(std::ifstream& stream, DataFileWriter& file)
-	{
-		stream >> file.getOfstream();
-		return stream;
-	}
 }

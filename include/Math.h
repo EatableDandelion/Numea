@@ -59,12 +59,49 @@ namespace Numea
 		{
 			for(int j = 0; j<N; j++)
 			{
-				stream << var[i][j] << " ";
+				stream << std::to_string(var[i][j]) << " ";
 			}
 			stream << std::endl;
 		}
 		return stream;
 	}
+	
+	/**
+	Wrapper for math functions. The template parameter is the list of variable.
+	Usage:
+	Function<float, float> myFunc([](float v, float w){return v*w;});
+	std::cout << myFunc(1.31f, 2.0f) << std::endl;
+	*/
+	template<typename... Args>
+	class Function
+	{
+		public:
+			Function(std::function<float(Args...)> f):func(f)
+			{}
+			
+			float operator()(Args... args) const
+			{
+				return func(std::forward<Args>(args)...);
+			}
+			
+			std::function<float(Args...)> getFunc()
+			{
+				return func;
+			}
+			
+			/** Fixes one or several variables as constant:
+				Function<float, float> xFunc([](float t, float x){return t+x;});
+				Function<float> subF = xFunc.sub<float>(std::placeholders::_1, 1.0f);
+			*/
+			template<typename... SubArgs, typename... AllArgs>
+			Function<SubArgs...> sub(AllArgs... args)
+			{
+				return Function<SubArgs...>(std::bind(func, std::forward<AllArgs>(args)...));
+			}
+			
+		private:
+			std::function<float(Args...)> func;
+	};
 	
 	
 	class Operators
@@ -150,30 +187,10 @@ namespace Numea
 				return firstPart+middlePart+lastPart;
 			}
 		
+			float integral(Function<float>& func, const float& x0, const float& x1, const float& dx);
+		
 			float interpolate(const float& x, const float& x0, const float& x1, const float& y0, const float& y1) const;
 		
-	};
-	
-	/**
-	Wrapper for math functions. The template parameter is the list of variable.
-	Usage:
-	Function<float, float> myFunc([](float v, float w){return v*w;});
-	std::cout << myFunc(1.31f, 2.0f) << std::endl;
-	*/
-	template<typename... Args>
-	class Function
-	{
-		public:
-			Function(std::function<float(Args...)> f):func(f)
-			{}
-			
-			float operator()(Args&... args) const
-			{
-				return func(std::forward<Args>(args)...);
-			}
-			
-		private:
-			std::function<float(Args...)> func;
 	};
 	
 	class EulerIntegrator

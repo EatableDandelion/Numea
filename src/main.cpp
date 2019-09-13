@@ -23,12 +23,16 @@
 			
 		}
 		std::cout << cosine << std::endl;*/
-		/*
+		
 		Operators I;
-		std::cout << I.integral(cosine, 0.0f, 3.1415f, 0, 1) << std::endl;*/
+		//std::cout << I.integral(cosine, 0.0f, 3.1415f, 0, 1) << std::endl;*/
+		
 		
 		Function<float, float> vFunc([](float t, float x){return (float)(-cos(x));});//dv/dt = -cos(x) = vFunc(x)
 		Function<float, float> xFunc([](float t, float x){return x;});				 //dx/dt = v = xFunc(v);	
+		
+		Function<float> cosine([](float x){return cos(x);});
+		//std::cout << I.integral(cosine, 0.0f, 3.1416f/2.0f, 0.01f) << std::endl;
 		
 		DataFileWriter fileWriter("test.txt");
 		
@@ -38,6 +42,7 @@
 		float v = 0.0f;
 		float dt = 0.001f;
 		float tmax = 10.0f;
+		Variable<3> c;
 		for(int i =0; i<tmax/dt; i++)
 		{
 			v = iterator.getNextY(vFunc, dt, t, x);
@@ -46,12 +51,12 @@
 			fileWriter.writeLine(t, x, 0*exp(t));
 		}
 		
-		
 		Plot2d plot("1st plot");
 		plot.setXAxisLabel("Time (s)");
 		plot.addSeries("test.txt", "y(t)", 0, 1, LineType::LINE);
 		plot.addSeries("test.txt", "exp(t)", 0, 2, LineType::LINE);
 		plot.display();
+		
 		
 		
 		return 0;
